@@ -10,8 +10,6 @@ RUN         chmod +x /tmp/bootstrap.sh && /tmp/bootstrap.sh
 
 RUN         useradd znc
 ADD         start-znc /usr/local/bin/
-ADD         znc.conf.default /src/
-RUN         chmod 644 /src/znc.conf.default
 
 EXPOSE      16667
 ENTRYPOINT  ["/usr/local/bin/start-znc"]
