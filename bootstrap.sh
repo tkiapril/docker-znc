@@ -1,19 +1,14 @@
 #! /usr/bin/env bash
 set -e
 
-
-# Config
-ZNC_VERSION="1.4"
-
-
 # Ensure package list is up to date.
-apt-get update
+pacman -Syy
 
 # Install runtime dependencies.
-apt-get install -y sudo
+pacman -S --noconfirm sudo
 
 # Install build dependencies.
-apt-get install -y wget build-essential libssl-dev libperl-dev pkg-config
+pacman -S --noconfirm make git gcc perl python openssl pkg-config swig icu automake autoconf
 
 
 # Prepare building
@@ -22,13 +17,11 @@ mkdir -p /src
 
 # Download, compile and install ZNC.
 cd /src
-wget "http://znc.in/releases/archive/znc-${ZNC_VERSION}.tar.gz"
-tar -zxf "znc-${ZNC_VERSION}.tar.gz"
-cd "znc-${ZNC_VERSION}"
-./configure && make && make install
+git clone https://github.com/znc/znc.git --recursive
+cd znc
+./bootstrap.sh && ./configure --enable-python=python-3.4 && make && make install
 
 
 # Clean up
-apt-get remove -y wget
-apt-get autoremove -y
-apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+yes y | sudo pacman -Sc
+yes y | sudo pacman -Scc && rm -rf /tmp/* /var/tmp/*
